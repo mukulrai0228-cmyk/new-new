@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEC Spartans — Applications (v2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#5C4EF5;
+    --primary-weak:#E8E6FF;
+    --primary-weak-2:#F1F0FE;
+    --gold:#FEC73F;
+    --bg:#F4F5F7;
+    --panel:#FFFFFF;
+    --ink:#1A1B25;
+    --ink-2:#4B4D5E;
+    --ink-3:#8A8D9F;
+    --line:#EAEBEF;
+    --line-2:#F0F1F4;
+
+    --new:#5C4EF5;      --new-bg:#EDEBFF;
+    --screen:#B8860B;   --screen-bg:#FEF3D6;
+    --accept:#12805C;   --accept-bg:#DCF5EC;
+    --reject:#C4443C;   --reject-bg:#FCE7E5;
+
+    --radius:12px;
+    --shadow:0 1px 2px rgba(20,22,40,.04), 0 8px 24px rgba(20,22,40,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    display:flex;min-height:100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:248px;flex-shrink:0;background:var(--panel);
+    border-right:1px solid var(--line);
+    display:flex;flex-direction:column;padding:18px 14px;
+    position:sticky;top:0;height:100vh;overflow-y:auto;
+  }
+  .brand{display:flex;align-items:center;gap:11px;padding:6px 8px 20px}
+  .brand-mark{
+    width:38px;height:38px;border-radius:10px;flex-shrink:0;
+    background:linear-gradient(135deg,#2A2B33,#15161B);
+    display:grid;place-items:center;position:relative;
+  }
+  .brand-mark svg{width:20px;height:20px}
+  .brand-name{font-size:16px;font-weight:700;letter-spacing:-.01em}
+  .brand-sub{font-size:11.5px;color:var(--ink-3);font-weight:500}
+  .nav-group{font-size:10.5px;font-weight:600;letter-spacing:.09em;color:var(--ink-3);
+    padding:14px 10px 6px;text-transform:uppercase}
+  .nav-item{
+    display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:9px;
+    font-size:13.5px;font-weight:500;color:var(--ink-2);cursor:pointer;
+    text-decoration:none;transition:background .12s,color .12s;
+  }
+  .nav-item svg{width:17px;height:17px;stroke-width:1.8;flex-shrink:0}
+  .nav-item:hover{background:var(--line-2);color:var(--ink)}
+  .nav-item.active{background:var(--primary-weak);color:var(--primary);font-weight:600}
+  .nav-item .count{margin-left:auto;font-size:11px;font-weight:600;
+    background:var(--primary);color:#fff;border-radius:20px;padding:1px 7px;min-width:20px;text-align:center}
+  .nav-divider{height:1px;background:var(--line);margin:12px 8px}
+
+  /* ---------- Main ---------- */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{
+    height:64px;flex-shrink:0;background:var(--panel);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:0 26px;
+    position:sticky;top:0;z-index:20;
+  }
+  .top-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:9px;
+    font-size:13px;font-weight:500;color:var(--ink-2);cursor:pointer}
+  .top-btn:hover{background:var(--line-2)}
+  .top-btn svg{width:16px;height:16px;stroke-width:1.9}
+  .user{display:flex;align-items:center;gap:10px;padding:6px 8px 6px 10px;border-radius:10px;cursor:pointer}
+  .user:hover{background:var(--line-2)}
+  .user-av{width:34px;height:34px;border-radius:50%;object-fit:cover;
+    background:linear-gradient(135deg,#8B7BFF,#5C4EF5);display:grid;place-items:center;color:#fff;font-weight:600;font-size:13px}
+  .user-name{font-size:13.5px;font-weight:600;line-height:1.2}
+  .user-role{font-size:11.5px;color:var(--ink-3)}
+
+  .content{padding:26px 30px 40px;flex:1}
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:6px}
+  .page-title{font-size:23px;font-weight:700;letter-spacing:-.02em}
+  .page-title span{color:var(--ink-3);font-weight:600}
+  .page-sub{font-size:13px;color:var(--ink-3);margin-top:3px}
+  .head-actions{display:flex;gap:10px}
+  .btn{display:inline-flex;align-items:center;gap:7px;font-family:inherit;font-size:13px;font-weight:600;
+    border-radius:9px;padding:9px 14px;cursor:pointer;border:1px solid transparent;transition:.12s}
+  .btn svg{width:15px;height:15px;stroke-width:2}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-primary:hover{background:#4B3EE0}
+  .btn-ghost{background:var(--panel);color:var(--ink-2);border-color:var(--line)}
+  .btn-ghost:hover{border-color:#D9DBE2;background:#FBFBFC}
+
+  /* ---------- Tabs ---------- */
+  .tabs{display:flex;gap:26px;border-bottom:1px solid var(--line);margin:20px 0 0}
+  .tab{padding:0 2px 13px;font-size:14px;font-weight:600;color:var(--ink-3);cursor:pointer;
+    position:relative;background:none;border:none;font-family:inherit}
+  .tab.active{color:var(--primary)}
+  .tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;
+    background:var(--primary);border-radius:3px}
+
+  /* ---------- Table card ---------- */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);margin-top:20px;overflow:hidden}
+
+  /* toolbar */
+  .toolbar{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
+  .segmented{display:flex;background:var(--bg);border-radius:9px;padding:3px;gap:2px}
+  .seg{display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:7px;font-size:13px;
+    font-weight:600;color:var(--ink-2);cursor:pointer;border:none;background:none;font-family:inherit;white-space:nowrap}
+  .seg:hover{color:var(--ink)}
+  .seg.active{background:var(--panel);color:var(--primary);box-shadow:0 1px 2px rgba(20,22,40,.08)}
+  .seg .pill{font-size:11px;font-weight:700;border-radius:20px;padding:1px 7px;background:var(--line);color:var(--ink-3)}
+  .seg.active .pill{background:var(--primary-weak);color:var(--primary)}
+  .spacer{flex:1}
+  .search{display:flex;align-items:center;gap:9px;background:var(--bg);border:1px solid var(--line);
+    border-radius:9px;padding:8px 12px;width:280px;transition:.14s}
+  .search:focus-within{border-color:var(--primary);background:var(--panel);box-shadow:0 0 0 3px var(--primary-weak)}
+  .search svg{width:16px;height:16px;stroke-width:2;color:var(--ink-3)}
+  .search input{border:none;background:none;outline:none;font-family:inherit;font-size:13px;color:var(--ink);width:100%}
+  .search input::placeholder{color:var(--ink-3)}
+  .icon-btn{width:37px;height:37px;border:1px solid var(--line);background:var(--panel);border-radius:9px;
+    display:grid;place-items:center;cursor:pointer;color:var(--ink-2)}
+  .icon-btn:hover{border-color:#D9DBE2;background:#FBFBFC}
+  .icon-btn svg{width:16px;height:16px;stroke-width:2}
+
+  /* selection bar */
+  .selbar{display:none;align-items:center;gap:16px;padding:12px 18px;background:var(--primary-weak-2);
+    border-bottom:1px solid var(--line)}
+  .selbar.show{display:flex}
+  .selbar .count{font-size:13px;font-weight:600;color:var(--primary)}
+  .selbar .actions{display:flex;gap:8px;margin-left:auto}
+  .chip-btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;
+    padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel);cursor:pointer;color:var(--ink-2)}
+  .chip-btn svg{width:14px;height:14px;stroke-width:2}
+  .chip-btn.adv:hover{border-color:var(--accept);color:var(--accept)}
+  .chip-btn.rej:hover{border-color:var(--reject);color:var(--reject)}
+
+  /* table */
+  table{width:100%;border-collapse:collapse}
+  thead th{
+    font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);
+    text-align:left;padding:12px 16px;background:#FBFBFC;border-bottom:1px solid var(--line);
+    position:sticky;top:64px;z-index:5;white-space:nowrap;
+  }
+  th.sortable{cursor:pointer;user-select:none}
+  th.sortable:hover{color:var(--ink-2)}
+  th .sort{display:inline-flex;align-items:center;gap:5px}
+  th .sort svg{width:13px;height:13px;stroke-width:2.2;opacity:.9}
+  th .sort.desc .caret-up,th .sort.asc .caret-down{opacity:.25}
+  th.col-check{width:44px;padding-left:18px}
+  th.col-actions{width:96px;text-align:right;padding-right:18px}
+
+  tbody td{padding:14px 16px;border-bottom:1px solid var(--line-2);font-size:13.5px;color:var(--ink-2);vertical-align:middle}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr{transition:background .1s}
+  tbody tr:hover{background:#FAFAFE}
+  tbody tr.selected{background:var(--primary-weak-2)}
+  td.col-check{padding-left:18px}
+  td.col-actions{text-align:right;padding-right:14px}
+
+  .check{width:18px;height:18px;border:1.6px solid #C7C9D4;border-radius:5px;cursor:pointer;
+    display:grid;place-items:center;background:var(--panel);transition:.1s;flex-shrink:0}
+  .check:hover{border-color:var(--primary)}
+  .check.on{background:var(--primary);border-color:var(--primary)}
+  .check svg{width:12px;height:12px;stroke:#fff;stroke-width:3;opacity:0}
+  .check.on svg{opacity:1}
+
+  .applicant{display:flex;align-items:center;gap:12px}
+  .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;
+    font-size:13px;font-weight:600;flex-shrink:0}
+  .a-name{font-size:14px;font-weight:600;color:var(--ink);line-height:1.25}
+  .a-meta{font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:6px;margin-top:1px}
+  .a-meta .yr{color:var(--primary);font-weight:600;cursor:help;border-bottom:1px dotted #B9B3F5}
+
+  .roles{display:flex;flex-wrap:wrap;gap:6px}
+  .role{font-size:11.5px;font-weight:500;color:var(--ink-2);background:var(--line-2);
+    border-radius:6px;padding:3px 9px;white-space:nowrap}
+  .role-more{color:var(--ink-3);font-weight:600}
+
+  .status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+    border-radius:20px;padding:4px 11px 4px 9px}
+  .status .dot{width:6px;height:6px;border-radius:50%}
+  .st-new{color:var(--new);background:var(--new-bg)} .st-new .dot{background:var(--new)}
+  .st-screen{color:var(--screen);background:var(--screen-bg)} .st-screen .dot{background:var(--screen)}
+  .st-accept{color:var(--accept);background:var(--accept-bg)} .st-accept .dot{background:var(--accept)}
+  .st-reject{color:var(--reject);background:var(--reject-bg)} .st-reject .dot{background:var(--reject)}
+
+  .row-actions{display:inline-flex;gap:2px;opacity:0;transition:opacity .12s}
+  tr:hover .row-actions{opacity:1}
+  .ra{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;cursor:pointer;color:var(--ink-3);border:none;background:none}
+  .ra:hover{background:var(--line);color:var(--ink)}
+  .ra svg{width:16px;height:16px;stroke-width:2}
+  .view-btn{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--primary);
+    background:none;border:none;cursor:pointer;padding:6px 4px;font-family:inherit}
+  .view-btn svg{width:14px;height:14px;stroke-width:2.2}
+
+  /* footer / pagination */
+  .tfoot{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;
+    border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
+  .tfoot .rows-info b{color:var(--ink-2);font-weight:600}
+  .pager{display:flex;align-items:center;gap:4px}
+  .pg{min-width:34px;height:34px;padding:0 6px;border-radius:8px;border:1px solid transparent;background:none;
+    font-family:inherit;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;display:grid;place-items:center}
+  .pg:hover{background:var(--line-2)}
+  .pg.active{background:var(--primary);color:#fff}
+  .pg.nav{color:var(--ink-3);gap:6px;display:inline-flex;align-items:center;padding:0 12px}
+  .pg.nav svg{width:14px;height:14px;stroke-width:2.2}
+  .pg:disabled{opacity:.4;cursor:not-allowed}
+  .perpage{display:flex;align-items:center;gap:8px}
+  .perpage select{font-family:inherit;font-size:13px;font-weight:600;color:var(--ink-2);border:1px solid var(--line);
+    border-radius:8px;padding:6px 8px;background:var(--panel);cursor:pointer}
+
+  .tip{position:relative}
+  .tip:hover .tip-box{opacity:1;transform:translateY(0);pointer-events:auto}
+  .tip-box{position:absolute;bottom:calc(100% + 8px);left:0;background:var(--ink);color:#fff;font-size:11.5px;
+    font-weight:500;padding:7px 10px;border-radius:7px;white-space:nowrap;opacity:0;transform:translateY(4px);
+    transition:.14s;pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,.18);z-index:30}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 4l8 7 8-7M6 20l6-6 6 6" stroke="#FEC73F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div>
+      <div class="brand-name">TEC Spartans</div>
+      <div class="brand-sub">Admin Console</div>
+    </div>
+  </div>
+
+  <div class="nav-group">General</div>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 11a9 9 0 019 9M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1.5"/></svg>Home Feed</a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 11l14-6v14L3 13v-2z"/><path d="M17 8a3 3 0 010 6"/></svg>Campaigns</a>
+  <a class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 3h6l5 5v11a2 2 0 01-2 2H8a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5"/></svg>Applications<span class="count">100</span></a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Payments</a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v10H7l-3 3V5z"/></svg>Chats</a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="2"/><path d="M3 16l5-4 4 3 3-2 6 5"/></svg>Hero Banners</a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 007 0l2-2a5 5 0 00-7-7l-1 1"/><path d="M14 11a5 5 0 00-7 0l-2 2a5 5 0 007 7l1-1"/></svg>Leads</a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Stats</a>
+
+  <div class="nav-divider"></div>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7l2-3h5l2 3h7a2 2 0 012 2v9a2 2 0 01-2 2H3V7z"/></svg>Directories</a>
+
+  <div class="nav-group">Lists</div>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 8l1-4h14l1 4M4 8h16v11a1 1 0 01-1 1H5a1 1 0 01-1-1V8z"/></svg>Stores</a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Products</a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5a2 2 0 012-2h6v18H6a2 2 0 01-2-2V5zM12 3h6a2 2 0 012 2v12a2 2 0 01-2 2h-6"/></svg>Training Material</a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0112 0M17 8l2 2 3-3"/></svg>Jobs</a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M4 12h16M4 18h16"/><path d="M8 6l-2 2M8 12l-2 2M8 18l-2 2" opacity=".01"/></svg>Tasks</a>
+
+  <div class="nav-group">Others</div>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>Escalations</a>
+  <a class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 10v10M7 10l4-7a2 2 0 013 2l-1 5h5a2 2 0 012 2l-1.5 6a2 2 0 01-2 1.5H7"/></svg>Feedback</a>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <div class="top-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Calendar</div>
+    <div class="user">
+      <div class="user-av">N</div>
+      <div>
+        <div class="user-name">Naveen</div>
+        <div class="user-role">Super Admin</div>
+      </div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" style="width:15px;height:15px;stroke-width:2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">Applications <span>· 100 total</span></h1>
+        <div class="page-sub">Review and move Spartans applicants through the hiring pipeline.</div>
+      </div>
+      <div class="head-actions">
+        <button class="btn btn-ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg>Export</button>
+        <button class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>New application</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active">Spartans Application</button>
+      <button class="tab">Ambassador Application</button>
+    </div>
+
+    <div class="card">
+      <!-- Toolbar: status filters that actually sum to 100 -->
+      <div class="toolbar">
+        <div class="segmented" id="segFilters">
+          <button class="seg active" data-f="new">New <span class="pill">42</span></button>
+          <button class="seg" data-f="screen">Screening <span class="pill">18</span></button>
+          <button class="seg" data-f="accept">Accepted <span class="pill">26</span></button>
+          <button class="seg" data-f="reject">Rejected <span class="pill">14</span></button>
+        </div>
+        <div class="spacer"></div>
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <input placeholder="Search by name, college or city">
+        </div>
+        <button class="icon-btn" title="Filter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 5h18M6 12h12M10 19h4"/></svg></button>
+        <button class="icon-btn" title="Columns"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 4v16"/></svg></button>
+      </div>
+
+      <!-- Bulk selection bar -->
+      <div class="selbar" id="selbar">
+        <span class="count" id="selcount">0 selected</span>
+        <div class="actions">
+          <button class="chip-btn adv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12l5 5L20 7"/></svg>Advance to screening</button>
+          <button class="chip-btn rej"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 6l12 12M18 6L6 18"/></svg>Reject</button>
+          <button class="chip-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg>Export</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th class="col-check"><div class="check" id="checkAll"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7"/></svg></div></th>
+            <th>Applicant</th>
+            <th>College</th>
+            <th>City</th>
+            <th>Roles of interest</th>
+            <th class="sortable">
+              <span class="sort desc">Submitted
+                <svg class="caret-up" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 15l6-6 6 6"/></svg>
+                <svg class="caret-down" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+              </span>
+            </th>
+            <th>Status</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+
+      <div class="tfoot">
+        <div class="rows-info">Showing <b>1–10</b> of <b>100</b> applications</div>
+        <div class="perpage">
+          <span>Rows per page</span>
+          <select><option>10</option><option>25</option><option>50</option></select>
+        </div>
+        <div class="pager">
+          <button class="pg nav" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 6l-6 6 6 6"/></svg>Prev</button>
+          <button class="pg active">1</button>
+          <button class="pg">2</button>
+          <button class="pg">3</button>
+          <button class="pg">4</button>
+          <span style="color:var(--ink-3);padding:0 4px">…</span>
+          <button class="pg">10</button>
+          <button class="pg nav">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Realistic, varied data — correct initials, sorted by Submitted (desc)
+const avatarColors = [
+  'linear-gradient(135deg,#8B7BFF,#5C4EF5)',
+  'linear-gradient(135deg,#F6A94A,#E67514)',
+  'linear-gradient(135deg,#4CC9A0,#12805C)',
+  'linear-gradient(135deg,#F27A8D,#D4425A)',
+  'linear-gradient(135deg,#5AB6F0,#2A7FD1)',
+  'linear-gradient(135deg,#B48BF0,#7C3FD1)'
+];
+const data = [
+  {n:'Ananya Sharma', yr:'L3', deg:'B.Tech', col:'Manipal Institute of Technology', city:'Bangalore', roles:['Content Creation','Event Coordination'], date:'22 Sep 2026', st:'new'},
+  {n:'Rohan Mehta', yr:'L2', deg:'B.Sc', col:'Lakshya College of Technology', city:'Jaipur', roles:['Social Media','Design','Photography'], date:'21 Sep 2026', st:'new'},
+  {n:'Priya Nair', yr:'L4', deg:'BBA', col:'Christ University', city:'Bangalore', roles:['Campus Ops'], date:'20 Sep 2026', st:'new'},
+  {n:'Karan Gupta', yr:'L1', deg:'B.Com', col:'Symbiosis Institute', city:'Pune', roles:['Event Coordination','Campus Ops'], date:'19 Sep 2026', st:'new'},
+  {n:'Sneha Reddy', yr:'L3', deg:'B.Des', col:'NIFT Hyderabad', city:'Hyderabad', roles:['Design','Content Creation'], date:'18 Sep 2026', st:'new'},
+  {n:'Aditya Iyer', yr:'L2', deg:'B.Tech', col:'VIT Vellore', city:'Vellore', roles:['Content Creation'], date:'17 Sep 2026', st:'new'},
+  {n:'Meera Joshi', yr:'L4', deg:'B.A', col:'Fergusson College', city:'Pune', roles:['Social Media','Event Coordination'], date:'16 Sep 2026', st:'new'},
+  {n:'Vikram Singh', yr:'L2', deg:'B.Sc', col:'Hansraj College', city:'Delhi', roles:['Photography','Campus Ops'], date:'15 Sep 2026', st:'new'},
+  {n:'Ishita Bose', yr:'L3', deg:'B.Tech', col:'Jadavpur University', city:'Kolkata', roles:['Content Creation','Design','Social Media'], date:'14 Sep 2026', st:'new'},
+  {n:'Rahul Verma', yr:'L2', deg:'B.Sc', col:'Manipal Institute of Technology', city:'Bangalore', roles:['Content Creation','Event Coordination'], date:'10 Jun 2026', st:'new'},
+];
+const stMap = {
+  new:{c:'st-new',t:'New'}, screen:{c:'st-screen',t:'Screening'},
+  accept:{c:'st-accept',t:'Accepted'}, reject:{c:'st-reject',t:'Rejected'}
+};
+const initials = n => n.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+const yrLabel = {L1:'1st year',L2:'2nd year',L3:'3rd year',L4:'4th year'};
+
+const tbody = document.getElementById('tbody');
+data.forEach((d,i)=>{
+  const st = stMap[d.st];
+  const shownRoles = d.roles.slice(0,2).map(r=>`<span class="role">${r}</span>`).join('');
+  const more = d.roles.length>2 ? `<span class="role role-more">+${d.roles.length-2}</span>` : '';
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="col-check"><div class="check row-check"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7"/></svg></div></td>
+    <td>
+      <div class="applicant">
+        <div class="av" style="background:${avatarColors[i%avatarColors.length]}">${initials(d.n)}</div>
+        <div>
+          <div class="a-name">${d.n}</div>
+          <div class="a-meta"><span class="tip yr">${d.yr}<span class="tip-box">${yrLabel[d.yr]}</span></span> · ${d.deg}</div>
+        </div>
+      </div>
+    </td>
+    <td>${d.col}</td>
+    <td>${d.city}</td>
+    <td><div class="roles">${shownRoles}${more}</div></td>
+    <td>${d.date}</td>
+    <td><span class="status ${st.c}"><span class="dot"></span>${st.t}</span></td>
+    <td class="col-actions">
+      <span class="row-actions">
+        <button class="ra" title="Advance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12l5 5L20 7"/></svg></button>
+        <button class="ra" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
+      </span>
+      <button class="view-btn">View<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 6l6 6-6 6"/></svg></button>
+    </td>`;
+  tbody.appendChild(tr);
+});
+
+// Selection logic
+const selbar = document.getElementById('selbar');
+const selcount = document.getElementById('selcount');
+const checkAll = document.getElementById('checkAll');
+function refresh(){
+  const on = document.querySelectorAll('.row-check.on').length;
+  selbar.classList.toggle('show', on>0);
+  selcount.textContent = on + ' selected';
+  checkAll.classList.toggle('on', on===data.length && on>0);
+}
+document.querySelectorAll('.row-check').forEach(c=>{
+  c.addEventListener('click',()=>{c.classList.toggle('on');c.closest('tr').classList.toggle('selected',c.classList.contains('on'));refresh();});
+});
+checkAll.addEventListener('click',()=>{
+  const to = !checkAll.classList.contains('on');
+  document.querySelectorAll('.row-check').forEach(c=>{c.classList.toggle('on',to);c.closest('tr').classList.toggle('selected',to);});
+  refresh();
+});
+// Segmented filter active state
+document.querySelectorAll('#segFilters .seg').forEach(s=>{
+  s.addEventListener('click',()=>{document.querySelectorAll('#segFilters .seg').forEach(x=>x.classList.remove('active'));s.classList.add('active');});
+});
+// Tabs
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');});
+});
+</script>
+</body>
+</html>
